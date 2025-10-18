@@ -1,19 +1,17 @@
 package clases;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class Prioridad {
-
     private String nombre;
     private int tiempoLlegada;
     private int tiempoRafaga;
     private int prioridad;
     private int tiempoEspera;
     private int tiempoRetorno;
+    private int tiempoFinalizacion;
 
-    // Constructor
     public Prioridad(String nombre, int tiempoLlegada, int tiempoRafaga, int prioridad) {
         this.nombre = nombre;
         this.tiempoLlegada = tiempoLlegada;
@@ -21,9 +19,9 @@ public class Prioridad {
         this.prioridad = prioridad;
         this.tiempoEspera = 0;
         this.tiempoRetorno = 0;
+        this.tiempoFinalizacion = 0;
     }
 
-    // Getters y Setters
     public String getNombre() {
         return nombre;
     }
@@ -56,24 +54,55 @@ public class Prioridad {
         this.tiempoRetorno = tiempoRetorno;
     }
 
-    // Método principal: calcula el orden según prioridad
+    public int getTiempoFinalizacion() {
+        return tiempoFinalizacion;
+    }
+
+    public void setTiempoFinalizacion(int tiempoFinalizacion) {
+        this.tiempoFinalizacion = tiempoFinalizacion;
+    }
+
     public static List<Prioridad> calcularPrioridad(List<Prioridad> listaProcesos) {
-        // Ordenar por prioridad (menor número = mayor prioridad)
-        listaProcesos.sort(Comparator.comparingInt(Prioridad::getPrioridad));
-
-        int tiempoActual = 0;
         List<Prioridad> resultado = new ArrayList<>();
+        List<Prioridad> pendientes = new ArrayList<>(listaProcesos);
+        int tiempoActual = 0;
 
-        for (Prioridad p : listaProcesos) {
-            if (tiempoActual < p.getTiempoLlegada()) {
-                tiempoActual = p.getTiempoLlegada();
+        while (!pendientes.isEmpty()) {
+            List<Prioridad> disponibles = new ArrayList<>();
+            for (Prioridad p : pendientes) {
+                if (p.getTiempoLlegada() <= tiempoActual) {
+                    disponibles.add(p);
+                }
             }
 
-            p.setTiempoEspera(tiempoActual - p.getTiempoLlegada());
-            tiempoActual += p.getTiempoRafaga();
-            p.setTiempoRetorno(tiempoActual - p.getTiempoLlegada());
+            if (disponibles.isEmpty()) {
+                int siguienteLlegada = pendientes.stream()
+                        .mapToInt(Prioridad::getTiempoLlegada)
+                        .min()
+                        .orElse(tiempoActual);
+                tiempoActual = siguienteLlegada;
+                continue;
+            }
 
-            resultado.add(p);
+            Prioridad procesoActual = disponibles.stream()
+                    .min(Comparator.comparingInt(Prioridad::getPrioridad)
+                            .thenComparingInt(Prioridad::getTiempoLlegada))
+                    .orElse(null);
+
+            if (procesoActual != null) {
+                // Tiempo de espera = tiempo actual - tiempo de llegada
+                procesoActual.setTiempoEspera(tiempoActual - procesoActual.getTiempoLlegada());
+                
+                // Actualizar tiempo actual (tiempo de finalización)
+                tiempoActual += procesoActual.getTiempoRafaga();
+                procesoActual.setTiempoFinalizacion(tiempoActual);
+                
+                // ¡CAMBIO AQUÍ! Tiempo de retorno = tiempo de finalización (SIN restar llegada)
+                procesoActual.setTiempoRetorno(tiempoActual);
+
+                resultado.add(procesoActual);
+                pendientes.remove(procesoActual);
+            }
         }
 
         return resultado;

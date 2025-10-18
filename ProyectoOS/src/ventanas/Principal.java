@@ -45,7 +45,7 @@ public class Principal extends javax.swing.JFrame {
     public Principal(String nombreUsuario) {
         initComponents();
         setResizable(false);
-        setTitle("Acceso al Sistema");
+        setTitle("Datos");
         setLocationRelativeTo(null);
         this.nombreUsuario = nombreUsuario;
         modeloTabla = (DefaultTableModel) tblProcesos.getModel();
@@ -323,6 +323,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBurstActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+
         try {
             String nombre = txtNombreProceso.getText().trim();
             String llegadaTxt = txtLlegada.getText().trim();
@@ -345,6 +346,12 @@ public class Principal extends javax.swing.JFrame {
             int rafaga = Integer.parseInt(burstTxt);
             int prioridad = Integer.parseInt(prioridadTxt);
 
+            // Validar que los valores sean mayores a 0
+            if (rafaga <= 0 || prioridad <= 0) {
+                JOptionPane.showMessageDialog(this, "La ráfaga y prioridad deben ser mayores a 0.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             // Crear y agregar proceso
             Prioridad p = new Prioridad(nombre, llegada, rafaga, prioridad);
             listaProcesos.add(p);
@@ -358,9 +365,13 @@ public class Principal extends javax.swing.JFrame {
             txtBurst.setText("");
             txtPrioridad.setText("");
 
+            // Enfocar el campo nombre para agilizar la captura
+            txtNombreProceso.requestFocus();
+
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Verifique que los valores numéricos sean válidos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
@@ -373,25 +384,18 @@ public class Principal extends javax.swing.JFrame {
 
         // Mostrar resultados en texto
         StringBuilder sb = new StringBuilder();
-        sb.append("ORDEN DE EJECUCIÓN (POR PRIORIDAD)\n\n");
+        sb.append("═══════════════════════════════════════════════════\n");
+        sb.append("       ORDEN DE EJECUCIÓN (POR PRIORIDAD)\n");
+        sb.append("═══════════════════════════════════════════════════\n\n");
+
         for (Prioridad p : resultado) {
             sb.append(p.toString()).append("\n");
         }
-        txtResultado.setText(sb.toString());
-        // Centrar el texto visualmente en el JTextArea
-        txtResultado.setAlignmentX(CENTER_ALIGNMENT);
-        txtResultado.setAlignmentY(CENTER_ALIGNMENT);
-        txtResultado.setCaretPosition(0); // Lleva el scroll arriba
-        txtResultado.setFont(new java.awt.Font("Ebrima", java.awt.Font.BOLD, 16)); // Fuente más visible
 
-// Simular alineación centrada manualmente (truco)
-        String[] lineas = txtResultado.getText().split("\n");
-        StringBuilder centrado = new StringBuilder();
-        for (String linea : lineas) {
-            int espacios = Math.max(0, (60 - linea.length()) / 2); // 60 puede ajustarse según el ancho
-            centrado.append(" ".repeat(espacios)).append(linea).append("\n");
-        }
-        txtResultado.setText(centrado.toString());
+        txtResultado.setText(sb.toString());
+        txtResultado.setCaretPosition(0); // Lleva el scroll arriba
+        txtResultado.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 13));
+
 
     }//GEN-LAST:event_btnCalcularActionPerformed
 
@@ -409,10 +413,12 @@ public class Principal extends javax.swing.JFrame {
             txtLlegada.setText("");
             txtBurst.setText("");
             txtPrioridad.setText("");
+            JOptionPane.showMessageDialog(this, "Datos borrados exitosamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     private void btnSimulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimulacionActionPerformed
+        // Validar que haya procesos
         if (listaProcesos.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "No hay procesos para simular.\nPor favor, agregue procesos primero.",
@@ -421,11 +427,36 @@ public class Principal extends javax.swing.JFrame {
             return;
         }
 
-        List<Prioridad> resultado = Prioridad.calcularPrioridad(listaProcesos);
-        VentanaSimulacion ventanaSimulacion = new VentanaSimulacion(resultado, nombreUsuario);
-        ventanaSimulacion.setVisible(true);
-        this.dispose();
+        // Validar que haya al menos 2 procesos para una simulación significativa
+        if (listaProcesos.size() < 2) {
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    "Solo hay 1 proceso.\n¿Desea continuar con la simulación de todos modos?",
+                    "Confirmación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (opcion != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
 
+        try {
+            // Calcular el orden de ejecución con el algoritmo de prioridad
+            List<Prioridad> resultado = Prioridad.calcularPrioridad(listaProcesos);
+
+            // Crear y mostrar la ventana de simulación
+            VentanaSimulacion ventanaSimulacion = new VentanaSimulacion(resultado, nombreUsuario);
+            ventanaSimulacion.setVisible(true);
+
+            // Cerrar la ventana actual
+            this.dispose();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al iniciar la simulación:\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_btnSimulacionActionPerformed
 
     /**

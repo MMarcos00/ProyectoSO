@@ -120,14 +120,14 @@ public class VentanaSimulacion extends javax.swing.JFrame {
         btnRegresar.setBorderPainted(false);
         btnRegresar.setFocusPainted(false);
         btnRegresar.setOpaque(false);
-        
+
         ImageIcon iconSalir = new ImageIcon(getClass().getResource("/imagenes/exit.png"));
         Image imgSalir = iconSalir.getImage().getScaledInstance(btnSalir.getWidth(), btnSalir.getHeight(), Image.SCALE_SMOOTH);
         btnSalir.setIcon(new ImageIcon(imgSalir));
-        btnSalir.setContentAreaFilled(false); 
-        btnSalir.setBorderPainted(false);     
-        btnSalir.setFocusPainted(false);    
-        btnSalir.setOpaque(false); 
+        btnSalir.setContentAreaFilled(false);
+        btnSalir.setBorderPainted(false);
+        btnSalir.setFocusPainted(false);
+        btnSalir.setOpaque(false);
     }
 
     @Override
@@ -343,25 +343,21 @@ public class VentanaSimulacion extends javax.swing.JFrame {
             document.open();
 
             // --- AGREGAR IMAGEN DE FONDO ---
-            String rutaLogo = "src/imagenes/umg.png"; // Ruta de tu logo
+            String rutaLogo = "src/imagenes/umg.png";
             com.itextpdf.text.Image img = com.itextpdf.text.Image.getInstance(rutaLogo);
 
-            // Escalar imagen para que ocupe la hoja
             img.scaleToFit(document.getPageSize().getWidth() - 50, document.getPageSize().getHeight() - 50);
 
-            // Centrar imagen
             img.setAbsolutePosition(
                     (document.getPageSize().getWidth() - img.getScaledWidth()) / 2,
                     (document.getPageSize().getHeight() - img.getScaledHeight()) / 2
             );
 
-            // Transparencia
             com.itextpdf.text.pdf.PdfContentByte canvas = writer.getDirectContentUnder();
             com.itextpdf.text.pdf.PdfGState gState = new com.itextpdf.text.pdf.PdfGState();
-            gState.setFillOpacity(0.15f); // 15% de opacidad
+            gState.setFillOpacity(0.15f);
             canvas.setGState(gState);
             canvas.addImage(img);
-            // ----------------------------------
 
             // Fuente elegante para el título
             com.itextpdf.text.Font fontTitulo = new com.itextpdf.text.Font(
@@ -372,14 +368,14 @@ public class VentanaSimulacion extends javax.swing.JFrame {
             titulo.setSpacingAfter(20);
             document.add(titulo);
 
-            // Tabla con estilo profesional
-            com.itextpdf.text.pdf.PdfPTable table = new com.itextpdf.text.pdf.PdfPTable(3);
+            // Tabla con estilo profesional - AMPLIADA CON MÁS COLUMNAS
+            com.itextpdf.text.pdf.PdfPTable table = new com.itextpdf.text.pdf.PdfPTable(6); // 6 columnas ahora
             table.setWidthPercentage(100);
             table.setSpacingBefore(10f);
             table.setSpacingAfter(10f);
 
             // Encabezados
-            String[] encabezados = {"Nombre", "Prioridad", "Tiempo de Ráfaga"};
+            String[] encabezados = {"Nombre", "Llegada", "Ráfaga", "Prioridad", "Espera", "Retorno"};
             com.itextpdf.text.Font fontHeader = new com.itextpdf.text.Font(
                     com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 12, com.itextpdf.text.Font.BOLD, com.itextpdf.text.BaseColor.WHITE);
 
@@ -394,50 +390,77 @@ public class VentanaSimulacion extends javax.swing.JFrame {
 
             // Celdas de contenido con alternancia de colores
             com.itextpdf.text.Font fontContenido = new com.itextpdf.text.Font(
-                    com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 12, com.itextpdf.text.Font.NORMAL, com.itextpdf.text.BaseColor.BLACK);
+                    com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 11, com.itextpdf.text.Font.NORMAL, com.itextpdf.text.BaseColor.BLACK);
+
+            // IMPORTANTE: Usar los procesos ya calculados
+            List<Prioridad> procesosCalculados = Prioridad.calcularPrioridad(listaProcesos);
 
             boolean alternarColor = false;
-            for (Prioridad p : listaProcesos) {
+            for (Prioridad p : procesosCalculados) {
                 java.awt.Color filaColor = alternarColor ? new java.awt.Color(230, 230, 230) : java.awt.Color.WHITE;
 
+                // Nombre
                 com.itextpdf.text.pdf.PdfPCell cellNombre = new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Phrase(p.getNombre(), fontContenido));
                 cellNombre.setHorizontalAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
                 cellNombre.setBackgroundColor(new com.itextpdf.text.BaseColor(filaColor.getRed(), filaColor.getGreen(), filaColor.getBlue()));
                 cellNombre.setBorderWidth(1f);
                 table.addCell(cellNombre);
 
+                // Llegada
+                com.itextpdf.text.pdf.PdfPCell cellLlegada = new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Phrase(String.valueOf(p.getTiempoLlegada()), fontContenido));
+                cellLlegada.setHorizontalAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
+                cellLlegada.setBackgroundColor(new com.itextpdf.text.BaseColor(filaColor.getRed(), filaColor.getGreen(), filaColor.getBlue()));
+                cellLlegada.setBorderWidth(1f);
+                table.addCell(cellLlegada);
+
+                // Ráfaga
+                com.itextpdf.text.pdf.PdfPCell cellRafaga = new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Phrase(String.valueOf(p.getTiempoRafaga()), fontContenido));
+                cellRafaga.setHorizontalAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
+                cellRafaga.setBackgroundColor(new com.itextpdf.text.BaseColor(filaColor.getRed(), filaColor.getGreen(), filaColor.getBlue()));
+                cellRafaga.setBorderWidth(1f);
+                table.addCell(cellRafaga);
+
+                // Prioridad
                 com.itextpdf.text.pdf.PdfPCell cellPrioridad = new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Phrase(String.valueOf(p.getPrioridad()), fontContenido));
                 cellPrioridad.setHorizontalAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
                 cellPrioridad.setBackgroundColor(new com.itextpdf.text.BaseColor(filaColor.getRed(), filaColor.getGreen(), filaColor.getBlue()));
                 cellPrioridad.setBorderWidth(1f);
                 table.addCell(cellPrioridad);
 
-                com.itextpdf.text.pdf.PdfPCell cellTiempo = new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Phrase(String.valueOf(p.getTiempoRafaga()), fontContenido));
-                cellTiempo.setHorizontalAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
-                cellTiempo.setBackgroundColor(new com.itextpdf.text.BaseColor(filaColor.getRed(), filaColor.getGreen(), filaColor.getBlue()));
-                cellTiempo.setBorderWidth(1f);
-                table.addCell(cellTiempo);
+                // Espera
+                com.itextpdf.text.pdf.PdfPCell cellEspera = new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Phrase(String.valueOf(p.getTiempoEspera()), fontContenido));
+                cellEspera.setHorizontalAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
+                cellEspera.setBackgroundColor(new com.itextpdf.text.BaseColor(filaColor.getRed(), filaColor.getGreen(), filaColor.getBlue()));
+                cellEspera.setBorderWidth(1f);
+                table.addCell(cellEspera);
+
+                // Retorno
+                com.itextpdf.text.pdf.PdfPCell cellRetorno = new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Phrase(String.valueOf(p.getTiempoRetorno()), fontContenido));
+                cellRetorno.setHorizontalAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
+                cellRetorno.setBackgroundColor(new com.itextpdf.text.BaseColor(filaColor.getRed(), filaColor.getGreen(), filaColor.getBlue()));
+                cellRetorno.setBorderWidth(1f);
+                table.addCell(cellRetorno);
 
                 alternarColor = !alternarColor;
             }
 
             document.add(table);
-// --- RESUMEN ESTADÍSTICO ---
+
+            // --- RESUMEN ESTADÍSTICO CORREGIDO ---
             double sumaEspera = 0;
             double sumaRetorno = 0;
             int tiempoTotalCPU = 0;
 
-            for (Prioridad p : listaProcesos) {
-                sumaEspera += p.getTiempoEspera();          // asegúrate de tener este dato calculado
-                sumaRetorno += p.getTiempoEspera() + p.getTiempoRafaga();
+            for (Prioridad p : procesosCalculados) {
+                sumaEspera += p.getTiempoEspera();
+                sumaRetorno += p.getTiempoRetorno(); // ← CAMBIO AQUÍ: usar getTiempoRetorno()
                 tiempoTotalCPU += p.getTiempoRafaga();
             }
 
-            double tme = sumaEspera / listaProcesos.size();
-            double ttr = sumaRetorno / listaProcesos.size();
+            double tme = sumaEspera / procesosCalculados.size();
+            double ttr = sumaRetorno / procesosCalculados.size();
             double cpuUtil = ((double) tiempoTotalCPU / panelSimulacionCustom.tiempoTotal) * 100;
 
-// Fuente más grande y color negro
             com.itextpdf.text.Font fontResumen = new com.itextpdf.text.Font(
                     com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 14, com.itextpdf.text.Font.BOLD, com.itextpdf.text.BaseColor.BLACK);
 
@@ -448,19 +471,17 @@ public class VentanaSimulacion extends javax.swing.JFrame {
                     + "Porcentaje de utilización de CPU: " + String.format("%.2f", cpuUtil) + "%",
                     fontResumen);
 
-// Alinear a la izquierda
             resumen.setAlignment(com.itextpdf.text.Element.ALIGN_LEFT);
             resumen.setSpacingBefore(15f);
 
             document.add(resumen);
 
-            // Información del algoritmo centrada y elegante (ahora con estilo de resumen estadístico)
             com.itextpdf.text.Font fontInfo = new com.itextpdf.text.Font(
                     com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 14, com.itextpdf.text.Font.BOLD, com.itextpdf.text.BaseColor.BLACK);
             com.itextpdf.text.Paragraph info = new com.itextpdf.text.Paragraph(
                     "Tiempo total de ejecución: " + panelSimulacionCustom.tiempoTotal + " unidades", fontInfo);
-            info.setAlignment(com.itextpdf.text.Element.ALIGN_LEFT); // alineación a la izquierda
-            info.setSpacingBefore(10f); // un poco de espacio antes
+            info.setAlignment(com.itextpdf.text.Element.ALIGN_LEFT);
+            info.setSpacingBefore(10f);
             document.add(info);
 
             document.close();

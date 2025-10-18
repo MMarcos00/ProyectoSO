@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
  * @author Marcos
  */
 public class Login extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
 
     /**
@@ -26,42 +26,42 @@ public class Login extends javax.swing.JFrame {
         setResizable(false);
         setTitle("Acceso al Sistema");
         setLocationRelativeTo(null);
-        
+
         ImageIcon wallpaper = new ImageIcon("src/imagenes/fondo.jpg");
         Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblWallpaper.getWidth(), lblWallpaper.getHeight(), Image.SCALE_SMOOTH));
         lblWallpaper.setIcon(icono);
         this.repaint();
-        
+
         ImageIcon waImageIcon = new ImageIcon("src/imagenes/umg.png");
-        Icon icono_logo = new ImageIcon(waImageIcon.getImage().getScaledInstance(lblumg.getWidth(),lblumg.getHeight(),Image.SCALE_SMOOTH));
+        Icon icono_logo = new ImageIcon(waImageIcon.getImage().getScaledInstance(lblumg.getWidth(), lblumg.getHeight(), Image.SCALE_SMOOTH));
         lblumg.setIcon(icono_logo);
         this.repaint();
-        
+
         ImageIcon iconSalir = new ImageIcon(getClass().getResource("/imagenes/exit.png"));
         Image imgSalir = iconSalir.getImage().getScaledInstance(btnExit.getWidth(), btnExit.getHeight(), Image.SCALE_SMOOTH);
         btnExit.setIcon(new ImageIcon(imgSalir));
-        btnExit.setContentAreaFilled(false); 
-        btnExit.setBorderPainted(false);     
-        btnExit.setFocusPainted(false);    
-        btnExit.setOpaque(false);   
-        
+        btnExit.setContentAreaFilled(false);
+        btnExit.setBorderPainted(false);
+        btnExit.setFocusPainted(false);
+        btnExit.setOpaque(false);
+
         ImageIcon infor = new ImageIcon(getClass().getResource("/imagenes/info.png"));
         Image info = infor.getImage().getScaledInstance(btnInfo.getWidth(), btnInfo.getHeight(), Image.SCALE_SMOOTH);
         btnInfo.setIcon(new ImageIcon(info));
-        btnInfo.setContentAreaFilled(false); 
-        btnInfo.setBorderPainted(false);     
-        btnInfo.setFocusPainted(false);    
-        btnInfo.setOpaque(false);   
+        btnInfo.setContentAreaFilled(false);
+        btnInfo.setBorderPainted(false);
+        btnInfo.setFocusPainted(false);
+        btnInfo.setOpaque(false);
 
     }
 
     @Override
-    public Image getIconImage(){
+    public Image getIconImage() {
         Image retValue;
         retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("imagenes/logo.png"));
         return retValue;
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -135,45 +135,43 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
-         String nombre = jTextFieldNombre.getText().trim();
-    if (nombre.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Por favor, ingresa tu nombre.", "Campo vacío", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-    
-    if (nombre.contains(" ")) {
-        JOptionPane.showMessageDialog(this, "Ingresa solo tu primer nombre (sin espacios crack).", "Nombre inválido", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-    
-    if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ]+")) {
-        JOptionPane.showMessageDialog(this, "El nombre solo debe contener letras.", "Nombre inválido", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-      
-    Principal ventanaPrincipal = new Principal(nombre);
-    ventanaPrincipal.setVisible(true);
-    this.dispose(); // Cierra la ventana actual
+        String nombre = jTextFieldNombre.getText().trim();
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingresa tu nombre.", "Campo vacío", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (nombre.contains(" ")) {
+            JOptionPane.showMessageDialog(this, "Ingresa solo tu primer nombre (sin espacios crack).", "Nombre inválido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ]+")) {
+            JOptionPane.showMessageDialog(this, "El nombre solo debe contener letras.", "Nombre inválido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Principal ventanaPrincipal = new Principal(nombre);
+        ventanaPrincipal.setVisible(true);
+        this.dispose(); // Cierra la ventana actual
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-         System.exit(0);
-    }//GEN-LAST:event_btnExitActionPerformed
-
+        System.exit(0);    }//GEN-LAST:event_btnExitActionPerformed
     private void btnInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoActionPerformed
-String mensaje = """
+        String mensaje = """
             Proyecto – Sistemas Operativos
             Algoritmo Prioridad
             Grupo #M.M
             Java Swing ©
             """;
-    
-    // Muestra el mensaje centrado en una ventana de información
-    JOptionPane.showMessageDialog(
-            this,
-            "<html><center>" + mensaje.replaceAll("\n", "<br>") + "</center></html>",
-            "Información del Proyecto",
-            JOptionPane.INFORMATION_MESSAGE
+
+        // Muestra el mensaje centrado en una ventana de información
+        JOptionPane.showMessageDialog(
+                this,
+                "<html><center>" + mensaje.replaceAll("\n", "<br>") + "</center></html>",
+                "Información del Proyecto",
+                JOptionPane.INFORMATION_MESSAGE
     );    }//GEN-LAST:event_btnInfoActionPerformed
 
     /**
