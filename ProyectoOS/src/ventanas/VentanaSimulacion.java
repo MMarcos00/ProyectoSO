@@ -76,7 +76,7 @@ public class VentanaSimulacion extends javax.swing.JFrame {
         btnPausar.setEnabled(false);
         btnReiniciar.setEnabled(false);
 
-        ImageIcon wallpaper = new ImageIcon("src/imagenes/fondo2.jpg");
+        ImageIcon wallpaper = new ImageIcon(getClass().getResource("/imagenes/fondo2.jpg"));
         Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblWallpaper.getWidth(), lblWallpaper.getHeight(), Image.SCALE_SMOOTH));
         lblWallpaper.setIcon(icono);
         this.repaint();
@@ -343,7 +343,7 @@ public class VentanaSimulacion extends javax.swing.JFrame {
             document.open();
 
             // --- AGREGAR IMAGEN DE FONDO ---
-            String rutaLogo = "src/imagenes/umg.png";
+            String rutaLogo = getClass().getResource("/imagenes/umg.png").toString();
             com.itextpdf.text.Image img = com.itextpdf.text.Image.getInstance(rutaLogo);
 
             img.scaleToFit(document.getPageSize().getWidth() - 50, document.getPageSize().getHeight() - 50);

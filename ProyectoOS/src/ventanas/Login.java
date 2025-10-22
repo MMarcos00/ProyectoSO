@@ -27,12 +27,12 @@ public class Login extends javax.swing.JFrame {
         setTitle("Acceso al Sistema");
         setLocationRelativeTo(null);
 
-        ImageIcon wallpaper = new ImageIcon("src/imagenes/fondo.jpg");
+        ImageIcon wallpaper = new ImageIcon(getClass().getResource("/imagenes/fondo.jpg"));
         Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblWallpaper.getWidth(), lblWallpaper.getHeight(), Image.SCALE_SMOOTH));
         lblWallpaper.setIcon(icono);
         this.repaint();
 
-        ImageIcon waImageIcon = new ImageIcon("src/imagenes/umg.png");
+        ImageIcon waImageIcon = new ImageIcon(getClass().getResource("/imagenes/umg.png"));
         Icon icono_logo = new ImageIcon(waImageIcon.getImage().getScaledInstance(lblumg.getWidth(), lblumg.getHeight(), Image.SCALE_SMOOTH));
         lblumg.setIcon(icono_logo);
         this.repaint();
@@ -58,7 +58,7 @@ public class Login extends javax.swing.JFrame {
     @Override
     public Image getIconImage() {
         Image retValue;
-        retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("imagenes/logo.png"));
+        retValue = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/imagenes/logo.png"));
         return retValue;
     }
 
@@ -159,12 +159,10 @@ public class Login extends javax.swing.JFrame {
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         System.exit(0);    }//GEN-LAST:event_btnExitActionPerformed
     private void btnInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoActionPerformed
-        String mensaje = """
-            Proyecto – Sistemas Operativos
-            Algoritmo Prioridad
-            Grupo #M.M
-            Java Swing ©
-            """;
+        String mensaje = "Proyecto – Sistemas Operativos\n"
+                       + "Algoritmo Prioridad\n"
+                       + "Grupo #M.M\n"
+                       + "Java Swing ©";
 
         // Muestra el mensaje centrado en una ventana de información
         JOptionPane.showMessageDialog(
@@ -172,7 +170,9 @@ public class Login extends javax.swing.JFrame {
                 "<html><center>" + mensaje.replaceAll("\n", "<br>") + "</center></html>",
                 "Información del Proyecto",
                 JOptionPane.INFORMATION_MESSAGE
-    );    }//GEN-LAST:event_btnInfoActionPerformed
+        );
+    }
+//GEN-LAST:event_btnInfoActionPerformed
 
     /**
      * @param args the command line arguments

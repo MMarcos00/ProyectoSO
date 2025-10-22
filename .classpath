@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="ProyectoOS/src"/>
+	<classpathentry kind="lib" path="ProyectoOS/dist/lib/AbsoluteLayout.jar"/>
+	<classpathentry kind="lib" path="ProyectoOS/dist/lib/itextpdf-5.5.13.3.jar"/>
+	<classpathentry kind="lib" path="ProyectoOS/dist/ProyectoOS.jar"/>
+	<classpathentry kind="output" path="ProyectoOS/build/classes"/>
+</classpath>

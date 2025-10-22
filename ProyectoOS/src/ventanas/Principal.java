@@ -77,7 +77,7 @@ public class Principal extends javax.swing.JFrame {
         txtBurst.addKeyListener(numericLimiter);
         txtPrioridad.addKeyListener(numericLimiter);
 
-        ImageIcon wallpaper = new ImageIcon("src/imagenes/fondo3.jpg");
+        ImageIcon wallpaper = new ImageIcon(getClass().getResource("/imagenes/fondo3.jpg"));
         Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(lblWallpaper.getWidth(), lblWallpaper.getHeight(), Image.SCALE_SMOOTH));
         lblWallpaper.setIcon(icono);
         this.repaint();
